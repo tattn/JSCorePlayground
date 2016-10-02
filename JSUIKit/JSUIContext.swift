@@ -24,11 +24,14 @@ open class JSUIContext: JSContext {
             print("JS Error(\(line), \(column)): \(exception)")
         }
 
-        class_addProtocol(UIView.self, JSUIView.self)
-        self.setObject(UIView.self, forKeyedSubscript: "UIView" as NSString)
+        let classes: [AnyClass] = [
+            UIView.self,
+            UIColor.self,
+        ]
 
-        class_addProtocol(UIColor.self, JSUIColor.self)
-        self.setObject(UIColor.self, forKeyedSubscript: "UIColor" as NSString)
+        classes.forEach {
+            addUIClass(klass: $0)
+        }
     }
 
     override init(virtualMachine: JSVirtualMachine!) {
@@ -37,5 +40,11 @@ open class JSUIContext: JSContext {
 
     open func setObject(obj: Any, name: String) {
         self.setObject(obj, forKeyedSubscript: name as NSString)
+    }
+
+    private func addUIClass(klass: AnyClass) {
+        let className = String(describing: klass)
+        class_addProtocol(klass, NSProtocolFromString("JSUIKit.JS\(className)"))
+        self.setObject(klass, forKeyedSubscript: className as NSString)
     }
 }
