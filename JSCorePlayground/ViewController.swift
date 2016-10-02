@@ -7,29 +7,14 @@
 //
 
 import UIKit
-import JavaScriptCore
+import JSUIKit
 
 class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let context: JSContext! = JSContext()
-        context.exceptionHandler = { context, exception in
-            guard let exception = exception else { return }
-            //let stacktrace = exception.objectForKeyedSubscript("stack").toString()
 
-            let line = exception.objectForKeyedSubscript("line")!
-            let column = exception.objectForKeyedSubscript("column")!
-
-            print("JS Error(\(line), \(column)): \(exception)")
-        }
-
-        class_addProtocol(UIView.self, JSUIView.self)
-        context.setObject(UIView.self, forKeyedSubscript: "UIView" as NSString)
-
-        class_addProtocol(UIColor.self, JSUIColor.self)
-        context.setObject(UIColor.self, forKeyedSubscript: "UIColor" as NSString)
-
+        let context = JSUIContext()
 
         context.setObject(view, forKeyedSubscript: "view" as NSString)
 
@@ -40,32 +25,8 @@ class ViewController: UIViewController {
             "view.addSubview(v);"
         )
 
-//        let value = context.objectForKeyedSubscript("window")
+//        let value = context.objectForKeyedSubscript("view")
     }
 
 
-}
-
-
-@objc public protocol JSUIView: JSExport {
-
-    var frame: CGRect { get set }
-    var backgroundColor: UIColor { get set }
-
-    static func new() -> UIView
-
-    func addSubview(_ view: UIView)
-}
-
-extension JSUIView where Self: UIView {
-    static func new() -> Self {
-        return self.init()
-    }
-}
-
-@objc public protocol JSUIWindow: JSExport {
-}
-
-@objc public protocol JSUIColor: JSExport {
-    static func redColor() -> UIColor
 }

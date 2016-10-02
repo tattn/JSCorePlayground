@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <JavaScriptCore/JavaScriptCore.h>
 
 //! Project version number for JSUIKit.
 FOUNDATION_EXPORT double JSUIKitVersionNumber;

@@ -15,8 +15,8 @@
 		24485E291DA15D4D00468248 /* JSUIKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 24485E271DA15D4D00468248 /* JSUIKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		24485E2C1DA15D4D00468248 /* JSUIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24485E251DA15D4D00468248 /* JSUIKit.framework */; };
 		24485E2D1DA15D4D00468248 /* JSUIKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 24485E251DA15D4D00468248 /* JSUIKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		24485E331DA15D8E00468248 /* JSContext+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24485E321DA15D8E00468248 /* JSContext+.swift */; };
-		24485E351DA15E6E00468248 /* JSContextBridger.m in Sources */ = {isa = PBXBuildFile; fileRef = 24485E341DA15E6E00468248 /* JSContextBridger.m */; };
+		24485E381DA1701A00468248 /* JSUIContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24485E371DA1701A00468248 /* JSUIContext.swift */; };
+		24485E3A1DA1704A00468248 /* JSUIKitBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24485E391DA1704A00468248 /* JSUIKitBridge.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,13 +51,11 @@
 		24485E121DA159C200468248 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		24485E151DA159C200468248 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		24485E171DA159C200468248 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		24485E1D1DA15BD300468248 /* JSCorePlayground-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "JSCorePlayground-Bridging-Header.h"; sourceTree = "<group>"; };
 		24485E251DA15D4D00468248 /* JSUIKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = JSUIKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		24485E271DA15D4D00468248 /* JSUIKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSUIKit.h; sourceTree = "<group>"; };
 		24485E281DA15D4D00468248 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		24485E321DA15D8E00468248 /* JSContext+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "JSContext+.swift"; sourceTree = "<group>"; };
-		24485E341DA15E6E00468248 /* JSContextBridger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSContextBridger.m; sourceTree = "<group>"; };
-		24485E361DA15EA300468248 /* JSContextBridger.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSContextBridger.h; sourceTree = "<group>"; };
+		24485E371DA1701A00468248 /* JSUIContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSUIContext.swift; sourceTree = "<group>"; };
+		24485E391DA1704A00468248 /* JSUIKitBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSUIKitBridge.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,7 +104,6 @@
 				24485E121DA159C200468248 /* Assets.xcassets */,
 				24485E141DA159C200468248 /* LaunchScreen.storyboard */,
 				24485E171DA159C200468248 /* Info.plist */,
-				24485E1D1DA15BD300468248 /* JSCorePlayground-Bridging-Header.h */,
 			);
 			path = JSCorePlayground;
 			sourceTree = "<group>";
@@ -116,9 +113,8 @@
 			children = (
 				24485E271DA15D4D00468248 /* JSUIKit.h */,
 				24485E281DA15D4D00468248 /* Info.plist */,
-				24485E321DA15D8E00468248 /* JSContext+.swift */,
-				24485E361DA15EA300468248 /* JSContextBridger.h */,
-				24485E341DA15E6E00468248 /* JSContextBridger.m */,
+				24485E371DA1701A00468248 /* JSUIContext.swift */,
+				24485E391DA1704A00468248 /* JSUIKitBridge.swift */,
 			);
 			path = JSUIKit;
 			sourceTree = "<group>";
@@ -249,8 +245,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				24485E351DA15E6E00468248 /* JSContextBridger.m in Sources */,
-				24485E331DA15D8E00468248 /* JSContext+.swift in Sources */,
+				24485E381DA1701A00468248 /* JSUIContext.swift in Sources */,
+				24485E3A1DA1704A00468248 /* JSUIKitBridge.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
