@@ -27,4 +27,3 @@ extension JSUIView where Self: UIView {
 
 @objc protocol JSUIWindow: JSExport {
 }
-

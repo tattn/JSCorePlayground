@@ -14,6 +14,7 @@ def test classname
   puts "#{classname}: #{tmp == test}"
 end
 
+`rm -rf ./tmp && mkdir ./tmp`
 
 `ruby ../make_bridge.rb ./tmp`
 

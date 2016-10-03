@@ -7,59 +7,60 @@ uri = URI.parse(url)
 source = Net::HTTP.get(uri)
 
 def get_class_name source
-  if source =~ /@interface\s+(\w+)/
-    return $1
-  end
-  ""
+  $1 if source =~ /@interface\s+(\w+)/
 end
 
-def get_static_methods source
-  # sample:
-  # + (id)ab_colorWithR:(double)arg1 G:(double)arg2 B:(double)arg3 A:(double)arg4;
-  
-  class_name = get_class_name source
+def get_methods source
+  def parse_method methods
+    methods.map do |method|
+      result = { original: method }
 
-  static_methods = source.scan /^\+.+;$/
+      # メソッド名
+      if method =~ /\)\s*(.?\w+)\s*[;:]/
+        result[:name] = $1
+      end
 
-  static_methods.map do |method|
-    result = { original: method }
+      # 戻り値
+      if method =~ /\(([^)]+)\)/
+        result[:return_type] = $1
+      end
 
-    # メソッド名
-    if method =~ /\)\s*(\w+)\s*[;:]/
-      result[:name] = $1
-    end
-
-    # 戻り値
-    if method =~ /\(([^)]+)\)/
-      result[:return_type] = $1
-    end
-
-    # 引数
-    if method =~ /:(.+);/
-      args = $1
-      args = args.scan /(?:\w+:)?\([^)]+\)\w+/ # ここの正規表現を考える
-      # if method =~ /.*_composedColorFromSourceColor.*/
-      #   puts args
-      #   exit
-      # end
-      result[:args] = args.map do |arg|
-        if arg =~ /(?:\w+:)?\(([^)]+)\)(\w+)/
-          {type: $1, name: $2}
-        else
-          p method
-          p result[:args]
-          p args
-          throw "Parse Error"
+      # 引数
+      if method =~ /:(.+);/
+        args = $1
+        args = args.scan /(?:\w+:)?\([^)]+\)\w+/ # ここの正規表現を考える
+        # if method =~ /.*_composedColorFromSourceColor.*/
+        #   puts args
+        #   exit
+        # end
+        result[:args] = args.map do |arg|
+          if arg =~ /(?:\w+:)?\(([^)]+)\)(\w+)/
+            {type: $1, name: $2}
+          else
+            p method
+            p result[:args]
+            p args
+            throw "Parse Error"
+          end
         end
       end
-    end
-    result
-  end.uniq {|f| f[:name] }
+      result
+    end.uniq {|f| f[:name] }
+  end
+
+  static_method_list   = source.scan /^\+.+;$/
+  instance_method_list = source.scan /^\-.+;$/
+
+  static_methods   = parse_method static_method_list
+  instance_methods = parse_method instance_method_list
+
+  {static_methods: static_methods, instance_methods: instance_methods}
 end
 
 def convert_to_swift data
-  classname = data[:class_name]
-  static_methods = data[:static_methods]
+  classname        = data[:class_name]
+  static_methods   = data[:static_methods]
+  instance_methods = data[:instance_methods]
 
   result = <<~EOS
   //
@@ -76,38 +77,54 @@ def convert_to_swift data
 
   result << "@objc protocol JS#{classname}: JSExport {\n"
 
-  static_methods.each do |static_method|
-    rettype = objctype2swifttype classname, static_method[:return_type]
-    funcname = static_method[:name]
-    args = static_method[:args].map do |arg|
-      "#{arg[:name]}: #{objctype2swifttype classname, arg[:type]}"
-    end.join ', ' if static_method[:args]
+  def make_method classname, methods, static = ''
+    result = ''
+    methods.each do |method|
+      rettype = objctype2swifttype classname, method[:return_type]
+      funcname = method[:name]
+      args = method[:args].map do |arg|
+        "#{arg[:name]}: #{objctype2swifttype classname, arg[:type]}"
+      end.join ', ' if method[:args]
 
-    # Remove unnecessary methods
-    next if ['allocWithZone'].include? funcname
+      # Remove unnecessary methods
+      next if ['allocWithZone', 'copyWithZone', '.cxx_destruct'].include? funcname
 
-    # Remove unnecessary types
-    next unless ['ITColor', 'C3DColor4', 'union', 'struct {'].select{|t| args =~ /.*#{t}.*/i}.empty?
+      # Remove unnecessary types
+      ignore_types = ['ITColor', 'C3DColor4', 'union', 'struct {']
+      next unless ignore_types.select{|t| args    =~ /.*#{t}.*/i}.empty?
+      next unless ignore_types.select{|t| rettype =~ /.*#{t}.*/i}.empty?
 
-    if rettype == 'Void'
-      result << "    static func #{funcname}(#{args})\n"
-    else
-      result << "    static func #{funcname}(#{args}) -> #{rettype}\n"
+      if rettype == 'Void'
+        result << "    #{static}func #{funcname}(#{args})\n"
+      else
+        result << "    #{static}func #{funcname}(#{args}) -> #{rettype}\n"
+      end
     end
+    result
   end
+
+  result << make_method(classname, static_methods, 'static ')
+  result << make_method(classname, instance_methods)
 
   result << "}\n"
 
   result
 end
 
-class_name     = get_class_name source
-static_methods = get_static_methods source
 
-data = {class_name: class_name, static_methods: static_methods}
+class_name = get_class_name source
+methods    = get_methods source
+
+data = {class_name: class_name}
+data.merge! methods
+
 swift = convert_to_swift data
 
-output_dir = ARGV[0]
-filename = "JS#{class_name}.swift"
-open(File.join(output_dir, filename), "w") {|f| f.write swift}
+if ARGV[0]
+  output_dir = ARGV[0]
+  filename = "JS#{class_name}.swift"
+  open(File.join(output_dir, filename), "w") {|f| f.write swift}
+else
+  puts swift
+end
 

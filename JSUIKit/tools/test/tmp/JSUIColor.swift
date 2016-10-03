@@ -341,4 +341,115 @@ import JavaScriptCore
     static func tsu_switchOnTintColor() -> UIColor
     static func tsu_switchTintColor() -> UIColor
     static func tsu_tableViewCellDarkBlueTextColor() -> UIColor
+    func CGColor() -> CGColor
+    func CIColor() -> UIColor
+    func _colorBlendedWithColor(arg1: UIColor) -> UIColor
+    func _colorBlendedWithColors(arg1: UIColor) -> UIColor
+    func _colorDifferenceFromColor(arg1: UIColor) -> Double
+    func _getRed(arg1: UnsafeMutablePointer<CGFloat>?, arg2: UnsafeMutablePointer<CGFloat>?, arg3: UnsafeMutablePointer<CGFloat>?, arg4: UnsafeMutablePointer<CGFloat>?) -> Bool
+    func _getWhite(arg1: UnsafeMutablePointer<CGFloat>?, arg2: UnsafeMutablePointer<CGFloat>?) -> Bool
+    func _isDeepColor() -> Bool
+    func _isSimilarToColor(arg1: UIColor, arg2: Double) -> Bool
+    func _luminance() -> Double
+    func _luminanceDifferenceFromColor(arg1: UIColor) -> Double
+    func _setSystemColorName(arg1: UIColor)
+    func _systemColorName() -> UIColor
+    func alphaComponent() -> Double
+    func cgColor() -> CGColor
+    func classForCoder() -> AnyClass
+    func colorWithAlphaComponent(arg1: Double) -> UIColor
+    func encodeWithCoder(arg1: UIColor)
+    func getHue(arg1: UnsafeMutablePointer<CGFloat>?, arg2: UnsafeMutablePointer<CGFloat>?, arg3: UnsafeMutablePointer<CGFloat>?, arg4: UnsafeMutablePointer<CGFloat>?) -> Bool
+    func getRed(arg1: UnsafeMutablePointer<CGFloat>?, arg2: UnsafeMutablePointer<CGFloat>?, arg3: UnsafeMutablePointer<CGFloat>?, arg4: UnsafeMutablePointer<CGFloat>?) -> Bool
+    func getWhite(arg1: UnsafeMutablePointer<CGFloat>?, arg2: UnsafeMutablePointer<CGFloat>?) -> Bool
+    func hash() -> UInt64
+    func initWithCGColor(arg1: CGColor) -> UIColor
+    func initWithCIColor(arg1: UIColor) -> UIColor
+    func initWithCoder(arg1: UIColor) -> UIColor
+    func initWithDisplayP3Red(arg1: Double, arg2: Double, arg3: Double, arg4: Double) -> UIColor
+    func initWithHue(arg1: Double, arg2: Double, arg3: Double, arg4: Double) -> UIColor
+    func initWithPatternImage(arg1: UIColor) -> UIColor
+    func initWithRed(arg1: Double, arg2: Double, arg3: Double, arg4: Double) -> UIColor
+    func initWithWhite(arg1: Double, arg2: Double) -> UIColor
+    func isEqual(arg1: UIColor) -> Bool
+    func isPatternColor() -> Bool
+    func set()
+    func setFill()
+    func setStroke()
+    func styleString() -> UIColor
+    func ui_highlightedColor() -> UIColor
+    func blueComponent() -> Double
+    func brightnessComponent() -> Double
+    func burnWithColor(arg1: UIColor) -> UIColor
+    func differenceFromColor(arg1: UIColor) -> Double
+    func greenComponent() -> Double
+    func hueComponent() -> Double
+    func isGreenOrYellow() -> Bool
+    func luminance() -> Double
+    func overlayWithColor(arg1: UIColor) -> UIColor
+    func redComponent() -> Double
+    func saturationComponent() -> Double
+    func soverWithColor(arg1: UIColor) -> UIColor
+    func _mapkit_blendedColorWithFraction(arg1: Double, arg2: UIColor) -> UIColor
+    func _mapkit_getRed(arg1: UnsafeMutablePointer<CGFloat>?, arg2: UnsafeMutablePointer<CGFloat>?, arg3: UnsafeMutablePointer<CGFloat>?, arg4: UnsafeMutablePointer<CGFloat>?) -> Bool
+    func _mapkit_isWhite() -> Bool
+    func MP_isArtworkColorAnalyzerLightColorForAlgorithm(arg1: Int64) -> Bool
+    func MP_lightness() -> Double
+    func pu_colorWithIncreasedAlpha() -> UIColor
+    func pu_colorWithIncreasedBrightness() -> UIColor
+    func a() -> Double
+    func b() -> Double
+    func g() -> Double
+    func r() -> Double
+    func alpha() -> Double
+    func blue() -> Double
+    func green() -> Double
+    func red() -> Double
+    func vectorRGBA()
+    func akAlphaComponent() -> Double
+    func akBlendedColorWithFraction(arg1: Double, arg2: UIColor) -> UIColor
+    func akIsEqualToColor(arg1: UIColor) -> Bool
+    func colorUsingSRGBColorSpace() -> UIColor
+    func _apw_colorByMultiplyingByFactor(arg1: Double) -> UIColor
+    func _apw_colorByMultiplyingByRed(arg1: Double, arg2: Double, arg3: Double, arg4: Double) -> UIColor
+    func colorSpaceModel() -> Int
+    func colorByBlendingWithColor(arg1: UIColor) -> UIColor
+    func JSONObjectRepresentation() -> UIColor
+    func initWithJSONObjectRepresentation(arg1: UIColor) -> UIColor
+    func _cnui_colorData() -> UIColor
+    func ccuiAccessibilityDarkColorVariant() -> UIColor
+    func invert() -> UIColor
+    func _gkLuminance() -> Double
+    func _lp_CSSText() -> UIColor
+    func _lp_CSSTextHexFormat() -> UIColor
+    func _CreateCIELABColor() -> CGColor
+    func _getCIEL(arg1: UnsafeMutablePointer<CGFloat>?, arg2: UnsafeMutablePointer<CGFloat>?, arg3: UnsafeMutablePointer<CGFloat>?)
+    func _getX(arg1: UnsafeMutablePointer<CGFloat>?, arg2: UnsafeMutablePointer<CGFloat>?, arg3: UnsafeMutablePointer<CGFloat>?)
+    func colorModel() -> Int
+    func hexString() -> UIColor
+    func initWithHexString(arg1: UIColor) -> UIColor
+    func isReallySimilarToColor(arg1: UIColor) -> Bool
+    func isSimilarToColor(arg1: UIColor) -> Bool
+    func perceptualLuminance() -> Double
+    func plistRepresentation() -> UIColor
+    func whiteComponent() -> Double
+    func brightenBy(arg1: Double) -> UIColor
+    func colorByBoostingSaturation(arg1: Double, arg2: Double) -> UIColor
+    func fc_darken(arg1: Double) -> UIColor
+    func fc_desaturate(arg1: Double) -> UIColor
+    func fc_legibleForegroundColor() -> UIColor
+    func fc_legibleStatusBarStyle() -> Int64
+    func fc_lighten(arg1: Double) -> UIColor
+    func fc_offsetWithHue(arg1: Double, arg2: Double, arg3: Double, arg4: Double) -> UIColor
+    func fc_saturate(arg1: Double) -> UIColor
+    func px_isTransparent() -> Bool
+    func safari_colorDataForSerialization() -> UIColor
+    func safari_rgbColorComponents() -> UIColor
+    func sb_isGrayscale() -> Bool
+    func skui_isOpaque() -> Bool
+    func initWithColorLiteralRed(arg1: Float, arg2: Float, arg3: Float, arg4: Float) -> UIColor
+    func colorByAlteringOpacityToPercentage(arg1: Float) -> UIColor
+    func darkerColorByPercentage(arg1: Float) -> UIColor
+    func tpImageFromColor() -> UIColor
+    func initWithStyleString(arg1: UIColor) -> UIColor
 }
