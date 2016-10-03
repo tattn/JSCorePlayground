@@ -28,6 +28,3 @@ extension JSUIView where Self: UIView {
 @objc protocol JSUIWindow: JSExport {
 }
 
-@objc protocol JSUIColor: JSExport {
-    static func redColor() -> UIColor
-}

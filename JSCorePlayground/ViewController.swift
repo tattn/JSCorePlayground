@@ -16,14 +16,11 @@ class ViewController: UIViewController {
 
         let context = JSUIContext()
 
-        context.setObject(view, forKeyedSubscript: "view" as NSString)
+        context.setObject(view, name: "view")
 
-        context.evaluateScript(
-            "var v = UIView.new();" + "\n" +
-            "v.backgroundColor = UIColor.redColor();" + "\n" +
-            "v.frame = {x: 20, y: 80, width: 200, height: 80};" + "\n" +
-            "view.addSubview(v);"
-        )
+        let jsPath = Bundle.main.path(forResource: "sample", ofType: "js")!
+        let js = try! String(contentsOfFile: jsPath)
+        context.evaluateScript(js)
 
 //        let value = context.objectForKeyedSubscript("view")
     }

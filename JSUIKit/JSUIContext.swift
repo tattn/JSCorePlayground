@@ -10,7 +10,7 @@ import Foundation
 import JavaScriptCore
 
 open class JSUIContext: JSContext {
-
+    
     public override init() {
         super.init()
 
@@ -38,7 +38,7 @@ open class JSUIContext: JSContext {
         super.init(virtualMachine:virtualMachine)
     }
 
-    open func setObject(obj: Any, name: String) {
+    open func setObject(_ obj: Any, name: String) {
         self.setObject(obj, forKeyedSubscript: name as NSString)
     }
 
