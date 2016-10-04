@@ -9,21 +9,21 @@
 import Foundation
 import JavaScriptCore
 
-@objc protocol JSUIView: JSExport {
+//@objc protocol JSUIView: JSExport {
+//
+//    var frame: CGRect { get set }
+//    var backgroundColor: UIColor { get set }
+//
+//    static func new() -> UIView
+//
+//    func addSubview(_ view: UIView)
+//}
 
-    var frame: CGRect { get set }
-    var backgroundColor: UIColor { get set }
-
-    static func new() -> UIView
-
-    func addSubview(_ view: UIView)
-}
-
-extension JSUIView where Self: UIView {
-    static func new() -> Self {
-        return self.init()
-    }
-}
+//extension JSUIView where Self: UIView {
+//    static func new() -> Self {
+//        return self.init()
+//    }
+//}
 
 @objc protocol JSUIWindow: JSExport {
 }

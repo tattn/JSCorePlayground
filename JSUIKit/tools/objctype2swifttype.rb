@@ -2,11 +2,14 @@
 def objctype2swifttype classname, objctype
   case objctype
   when 'id'
+    # 'Any'
     classname
   when 'id*'
     'UnsafePointer<UInt8>'
-  when /.*struct (\w+).*/
+  when /struct (\w+).*/
     $1
+  when 'void*'
+    'UnsafeMutableRawPointer'
   when 'double*'
     'UnsafeMutablePointer<CGFloat>?'
   when 'unsigned int'
@@ -17,8 +20,10 @@ def objctype2swifttype classname, objctype
     'Int64'
   when 'Class'
     'AnyClass'
+  when 'SEL'
+    'Selector'
   else
-    objctype.capitalize
+    objctype[0].upcase + objctype[1..objctype.length]
   end
 end
 

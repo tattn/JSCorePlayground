@@ -2,40 +2,54 @@ require 'net/http'
 require 'date'
 require_relative './objctype2swifttype'
 
-url = "https://raw.githubusercontent.com/JaviSoto/iOS10-Runtime-Headers/master/Frameworks/UIKit.framework/UIColor.h"
+urls = [
+  "https://raw.githubusercontent.com/JaviSoto/iOS10-Runtime-Headers/master/Frameworks/UIKit.framework/UIColor.h",
+  "https://raw.githubusercontent.com/JaviSoto/iOS10-Runtime-Headers/master/Frameworks/UIKit.framework/UIView.h",
+]
+url = urls[1]
 uri = URI.parse(url)
 source = Net::HTTP.get(uri)
+
+# unnecessary methods
+$ignore_methods = ['allocWithZone', 'copyWithZone', 'init', 'release', '.cxx_destruct']
+
+
+def remove_comment_out source
+  source.gsub /\/\*\/?(\n|[^\/]|[^\*]\/)*\*\//, ''
+end
 
 def get_class_name source
   $1 if source =~ /@interface\s+(\w+)/
 end
 
 def get_methods source
-  def parse_method methods
+  classname = get_class_name source
+  def parse_method methods, classname
+
     methods.map do |method|
       result = { original: method }
 
       # メソッド名
       if method =~ /\)\s*(.?\w+)\s*[;:]/
-        result[:name] = $1
+        result[:name] = $1.strip
       end
 
       # 戻り値
       if method =~ /\(([^)]+)\)/
-        result[:return_type] = $1
+        result[:return_type] = $1.strip
       end
 
       # 引数
       if method =~ /:(.+);/
         args = $1
-        args = args.scan /(?:\w+:)?\([^)]+\)\w+/ # ここの正規表現を考える
-        # if method =~ /.*_composedColorFromSourceColor.*/
+        args = args.scan /(?:\w+:)?\([^)]+\)\w+/
+        # if method =~ /.*setFrame.*/
         #   puts args
         #   exit
         # end
         result[:args] = args.map do |arg|
           if arg =~ /(?:\w+:)?\(([^)]+)\)(\w+)/
-            {type: $1, name: $2}
+            {type: objctype2swifttype(classname, $1.strip), name: $2.strip}
           else
             p method
             p result[:args]
@@ -51,16 +65,67 @@ def get_methods source
   static_method_list   = source.scan /^\+.+;$/
   instance_method_list = source.scan /^\-.+;$/
 
-  static_methods   = parse_method static_method_list
-  instance_methods = parse_method instance_method_list
+  static_methods   = parse_method static_method_list, classname
+  instance_methods = parse_method instance_method_list, classname
 
   {static_methods: static_methods, instance_methods: instance_methods}
+end
+
+def convert_to_getter_setter methods
+  properties = []
+  methods.each do |method|
+    name    = method[:name]
+    args    = method[:args]
+    rettype = method[:return_type]
+
+    if name[0..2] == 'set'
+      next if !args or args.length != 1
+      
+      name = name[3].downcase + name[4..name.length]
+
+      property = properties.select{|p| p[:name] == name}[0]
+
+      unless property
+        property = {}
+
+        property[:name] = name
+        property[:get]  = true
+        property[:type] = args[0][:type]
+
+        properties.push property
+      end
+
+      property[:set] = true
+
+      method[:delete] = true
+
+    elsif !args and rettype != 'void'
+      property = properties.select{|p| p[:name] == name}[0]
+
+      unless property
+        property = {} 
+
+        property[:name] = name
+        property[:get]  = true
+        property[:type] = rettype
+
+        properties.push property
+      end
+
+      method[:delete] = true
+    end
+  end
+
+  methods.delete_if {|m| m[:delete]}
+
+  {properties: properties}
 end
 
 def convert_to_swift data
   classname        = data[:class_name]
   static_methods   = data[:static_methods]
   instance_methods = data[:instance_methods]
+  properties       = data[:properties]
 
   result = <<~EOS
   //
@@ -83,14 +148,20 @@ def convert_to_swift data
       rettype = objctype2swifttype classname, method[:return_type]
       funcname = method[:name]
       args = method[:args].map do |arg|
-        "#{arg[:name]}: #{objctype2swifttype classname, arg[:type]}"
+        "#{arg[:name]}: #{arg[:type]}"
       end.join ', ' if method[:args]
 
+      # Remove private methods
+      next if funcname[0] == '_'
+
       # Remove unnecessary methods
-      next if ['allocWithZone', 'copyWithZone', '.cxx_destruct'].include? funcname
+      next if $ignore_methods.include? funcname
+
+      # Remove private types
+      next unless method[:args].select{|m| m[:type][0] == '_'}.empty? if method[:args]
 
       # Remove unnecessary types
-      ignore_types = ['ITColor', 'C3DColor4', 'union', 'struct {']
+      ignore_types = ['ITColor', 'C3DColor4', 'PHDisplayVelocity', 'PUDisplayVelocity', 'PXDisplayVelocity', 'union', 'struct {']
       next unless ignore_types.select{|t| args    =~ /.*#{t}.*/i}.empty?
       next unless ignore_types.select{|t| rettype =~ /.*#{t}.*/i}.empty?
 
@@ -106,17 +177,45 @@ def convert_to_swift data
   result << make_method(classname, static_methods, 'static ')
   result << make_method(classname, instance_methods)
 
-  result << "}\n"
+  properties.map do |property|
+    next if property[:name][0] == '_'
+    next if $ignore_methods.include? property[:name]
+
+    name = property[:name]
+    type = objctype2swifttype  classname, property[:type]
+
+    if property[:get] and property[:set]
+      result << "    var #{name}: #{type} { get set }\n"
+    elsif property[:get]
+      result << "    var #{name}: #{type} { get }\n"
+    elsif property[:set]
+      result << "    var #{name}: #{type} { set }\n"
+    end
+  end
+
+  result += <<~EOS
+      static func new() -> UIView
+  }
+
+  extension JS#{classname} where Self: #{classname} {
+      static func new() -> Self {
+          return self.init()
+      }
+  }
+  EOS
 
   result
 end
 
+source = remove_comment_out source
 
 class_name = get_class_name source
 methods    = get_methods source
+properties = convert_to_getter_setter methods[:instance_methods]
 
 data = {class_name: class_name}
 data.merge! methods
+data.merge! properties
 
 swift = convert_to_swift data
 
