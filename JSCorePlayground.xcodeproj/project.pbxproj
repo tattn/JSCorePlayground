@@ -488,6 +488,7 @@
 				24485E1C1DA159C200468248 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		24485E2E1DA15D4D00468248 /* Build configuration list for PBXNativeTarget "JSUIKit" */ = {
 			isa = XCConfigurationList;
@@ -496,6 +497,7 @@
 				24485E301DA15D4D00468248 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
